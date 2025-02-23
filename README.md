@@ -1,8 +1,43 @@
-# React + Vite
+## Getting started 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### Install dependencies 
 
-Currently, two official plugins are available:
+`npm install`
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Running development server 
+
+`npm run dev`
+
+By default, the app will be available at `http://localhost:5173/`
+
+### Build for production
+
+`npm run build`
+
+## Flask server
+
+`cd backend`
+
+### Create Python virtual environment 
+
+`python -m venv .venv`
+
+### Activate virtual environment
+
+```bash
+# Linux 
+source venv/bin/activate
+
+# Windows 
+.venv\bin\Activate.ps1
+```
+
+### Install dependencies
+
+`pip install -r requirements.txt`
+
+### Start Flask server
+
+`flask run`
+
+By default, the flask app will be available at `http://localhost:5000/`
