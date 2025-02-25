@@ -26,3 +26,4 @@ dist-ssr
 # pycache and virtual env
 .venv
 *.pyc
+.env
