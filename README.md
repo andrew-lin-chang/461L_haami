@@ -1,10 +1,10 @@
-## Getting started 
+## Getting started
 
-### Install dependencies 
+### Install dependencies
 
 `npm install`
 
-### Running development server 
+### Running development server
 
 `npm run dev`
 
@@ -18,17 +18,17 @@ By default, the app will be available at `http://localhost:5173/`
 
 `cd backend`
 
-### Create Python virtual environment 
+### Create Python virtual environment
 
 `python -m venv .venv`
 
 ### Activate virtual environment
 
 ```bash
-# Linux 
+# Linux
 source venv/bin/activate
 
-# Windows 
+# Windows
 .venv\bin\Activate.ps1
 ```
 
