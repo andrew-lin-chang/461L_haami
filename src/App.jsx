@@ -5,7 +5,37 @@ import Login from "./Login";
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#808080",
+      main: "#E48312",
+    },
+  },
+  typography: {
+    fontFamily: "Poppins",
+  },
+  components: {
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          borderRadius: "16px",
+          "& fieldset": {
+            borderWidth: "2px",
+            borderColor: "#ccc",
+          },
+        },
+      },
+    },
+    MuiInputLabel: {
+      styleOverrides: {
+        root: {
+          color: "#999",
+        },
+      },
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: "16px",
+        },
+      },
     },
   },
 });
