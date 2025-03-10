@@ -10,6 +10,7 @@ import {
   IconButton,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
   return (
@@ -42,6 +43,7 @@ export default function Login() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -54,6 +56,7 @@ export default function Login() {
       return;
     }
     console.log(isSignUp ? "Signing up" : "Logging in", formData);
+    navigate("/dashboard");
   };
 
   return (

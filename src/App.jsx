@@ -1,6 +1,8 @@
 import "./App.css";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Login";
+import Dashboard from "./Dashboard";
 
 const theme = createTheme({
   palette: {
@@ -43,9 +45,12 @@ const theme = createTheme({
 function App() {
   return (
     <ThemeProvider theme={theme}>
-      <div>
-        <Login />
-      </div>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Login />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Routes>
+      </Router>
     </ThemeProvider>
   );
 }
