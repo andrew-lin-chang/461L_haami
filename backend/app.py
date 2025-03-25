@@ -1,9 +1,10 @@
 import os
+from schema import User, Project, Hardware, Checkout
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
-from mongoengine import connect, Document, StringField
+from mongoengine import connect 
 
 load_dotenv(dotenv_path="../.env")
 
@@ -15,9 +16,6 @@ bcrypt = Bcrypt(app)
 connect("461L", host=mongo_uri)
 
 
-class User(Document):
-    username = StringField(required=True, unique=True)
-    password = StringField(required=True)
 
 
 @app.route("/")
@@ -46,11 +44,10 @@ def signup():
 
     if User.objects(username=username).first():
         return jsonify({"error": "User already exists"}), 400
-
-    user = User(username=username, password=hashed_password)
-    user.save()
-
-    return jsonify({"message": "User registered successfully"}), 200
+    else:
+        user = User(username=username, password=hashed_password)
+        user.save()
+        return jsonify({"message": "User registered successfully"}), 200
 
 
 if __name__ == "__main__":
