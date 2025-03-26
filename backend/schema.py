@@ -6,6 +6,7 @@ class User(Document):
 
 class Project(Document):
     name = StringField(required=True, unique=True)
+    description = StringField()
     authorized_users = ListField(ReferenceField('User'))
     hardware_list = ListField(ReferenceField('Hardware'))
 
@@ -13,6 +14,7 @@ class Hardware(Document):
     name = StringField(required=True)
     project = ReferenceField('Project', required=True)
     available = IntField(required=True)
+    checked_out = IntField(required=True)
     checkouts = ListField(ReferenceField('Checkout'))
 
 class Checkout(Document):
