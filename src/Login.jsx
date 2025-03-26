@@ -67,11 +67,10 @@ export default function Login() {
       </Typography>
       <form onSubmit={handleSubmit}>
         <TextField
-          label="Email"
-          name="email"
-          type="email"
+          label="User ID"
+          name="userid"
           fullWidth
-          value={formData.email}
+          value={formData.userid}
           onChange={handleChange}
           required
           sx={{
