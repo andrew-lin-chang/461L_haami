@@ -15,9 +15,6 @@ bcrypt = Bcrypt(app)
 
 connect("461L", host=mongo_uri)
 
-
-
-
 @app.route("/")
 def home():
     try:
