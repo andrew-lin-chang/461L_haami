@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
+from flask_cors import CORS
 from mongoengine import connect 
 
 load_dotenv(dotenv_path="../.env")
@@ -12,6 +13,7 @@ mongo_uri = os.getenv("MONGO_URI")
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
+CORS(app, supports_credentials=True)
 
 connect("461L", host=mongo_uri)
 
@@ -31,18 +33,18 @@ def home():
 @app.route("/signup", methods=["POST"])
 def signup():
     data = request.json
-    username = data.get("username")
-    password = data.get("password")
+    userid = data.get("userid").strip()
+    password = data.get("password").strip()
 
-    if not username or not password:
-        return jsonify({"error": "Username and password are required"}), 400
+    if not userid or not password:
+        return jsonify({"message": "userid and password are required"}), 400
 
     hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
-    if User.objects(username=username).first():
-        return jsonify({"error": "User already exists"}), 400
+    if User.objects(userid=userid).first():
+        return jsonify({"message": "User already exists"}), 400
     else:
-        user = User(username=username, password=hashed_password)
+        user = User(userid=userid, password=hashed_password)
         user.save()
         return jsonify({"message": "User registered successfully"}), 200
 

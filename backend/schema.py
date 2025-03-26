@@ -1,7 +1,7 @@
 from mongoengine import Document, ReferenceField, ListField, StringField, IntField
 
 class User(Document):
-    username = StringField(required=True, unique=True)
+    userid = StringField(required=True, unique=True)
     password = StringField(required=True)
 
 class Project(Document):
