@@ -57,7 +57,7 @@ export default function Dashboard() {
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
 
-  const projects = [
+  const [projectsState, setProjectsState] = useState([
     {
       name: "Project A",
       users: ["user a", "user b", "user c"],
@@ -112,7 +112,7 @@ export default function Dashboard() {
         },
       ],
     },
-  ];
+  ]);
 
   const handleCheckoutRequest = (projectIndex, hardwareIndex, value) => {
     const key = `${projectIndex}-${hardwareIndex}`;
@@ -121,32 +121,30 @@ export default function Dashboard() {
 
   const handleCheckout = (projectIndex, hardwareIndex) => {
     const key = `${projectIndex}-${hardwareIndex}`;
-    const project = projects[projectIndex];
-    const hardware = project.hardware[hardwareIndex];
     const numberToCheckOut = parseInt(checkoutRequests[key] || 0);
-    if (
-      numberToCheckOut > 0 &&
-      numberToCheckOut <= hardware.totalAvailable - hardware.numberCheckedOut
-    ) {
+
+    if (numberToCheckOut <= 0) return;
+
+    const updatedProjects = [...projectsState];
+    const hardware = updatedProjects[projectIndex].hardware[hardwareIndex];
+    const available = hardware.totalAvailable - hardware.numberCheckedOut;
+
+    if (numberToCheckOut <= available) {
       hardware.numberCheckedOut += numberToCheckOut;
-      hardware.totalAvailable -= numberToCheckOut;
       setCheckoutRequests({ ...checkoutRequests, [key]: "" });
+      setProjectsState(updatedProjects); // updates UI
+    } else {
+      alert("Not enough hardware available to check out.");
     }
   };
 
-  const handleOpenJoinDialog = () => {
-    setOpenJoinDialog(true);
-  };
-
+  const handleOpenJoinDialog = () => setOpenJoinDialog(true);
   const handleCloseJoinDialog = () => {
     setOpenJoinDialog(false);
     setProjectId("");
   };
 
-  const handleOpenCreateDialog = () => {
-    setOpenCreateDialog(true);
-  };
-
+  const handleOpenCreateDialog = () => setOpenCreateDialog(true);
   const handleCloseCreateDialog = () => {
     setOpenCreateDialog(false);
     setProjectId("");
@@ -177,7 +175,7 @@ export default function Dashboard() {
         >
           Join Existing Project
         </Button>
-        {projects.map((project, projectIndex) => (
+        {projectsState.map((project, projectIndex) => (
           <div key={projectIndex} style={{ marginBottom: "40px" }}>
             <Typography variant="h5" gutterBottom>
               {project.name}
@@ -252,7 +250,7 @@ export default function Dashboard() {
         ))}
       </Container>
 
-      {/* Join Existing Project Dialog */}
+      {/* Join Dialog */}
       <Dialog open={openJoinDialog} onClose={handleCloseJoinDialog}>
         <DialogTitle>Join Existing Project</DialogTitle>
         <DialogContent>
@@ -279,13 +277,13 @@ export default function Dashboard() {
         </DialogActions>
       </Dialog>
 
-      {/* Create New Project Dialog */}
+      {/* Create Dialog */}
       <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog}>
         <DialogTitle>Create New Project</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter the Project ID, Project Name, and Project Description
-            to create a new project.
+            Please enter the Project ID, Name, and Description to create a new
+            project.
           </DialogContentText>
           <TextField
             autoFocus
