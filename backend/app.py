@@ -48,6 +48,23 @@ def signup():
         user.save()
         return jsonify({"message": "User registered successfully"}), 200
 
+@app.post("/login")
+def login():
+    data = request.json
+    userid = data.get("userid")
+    password = data.get("password")
+
+    if not userid or not password:
+        return jsonify({"message": "userid and password are required"}), 400
+
+    user = User.objects(userid=userid).first()
+    print(data)
+    print(user.password)
+    if not user or not bcrypt.check_password_hash(user.password, password):
+        return jsonify({"message": "Invalid userid or password"}), 401
+
+    return jsonify({"message": "Login successful"}), 200
+
 @app.post("/project")
 def create_project():
     data = request.json
