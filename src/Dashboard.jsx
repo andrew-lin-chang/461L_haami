@@ -4,18 +4,7 @@ import {
   Toolbar,
   Typography,
   Container,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Button,
-  Slider,
-  List,
-  ListItem,
-  ListItemText,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,6 +12,7 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import ProjectCard from "./ProjectCard";
 
 function Header() {
   return (
@@ -50,89 +40,12 @@ function Header() {
 }
 
 export default function Dashboard() {
-  const [checkoutRequests, setCheckoutRequests] = useState({});
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [projectId, setProjectId] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
-
-  const projects = [
-    {
-      name: "Project A",
-      users: ["user a", "user b", "user c"],
-      hardware: [
-        {
-          name: "HWSET 1",
-          description: "Raspberry Pi 4, Arduino Uno, and more",
-          totalAvailable: 10,
-          numberCheckedOut: 2,
-        },
-        {
-          name: "HWSET 2",
-          description: "Hard drive and microcontroller",
-          totalAvailable: 15,
-          numberCheckedOut: 5,
-        },
-      ],
-    },
-    {
-      name: "Project B",
-      users: ["user a", "user b", "user c"],
-      hardware: [
-        {
-          name: "HWSET 1",
-          description: "Raspberry Pi 4, Arduino Uno, and more",
-          totalAvailable: 10,
-          numberCheckedOut: 2,
-        },
-        {
-          name: "HWSET 2",
-          description: "Hard drive and microcontroller",
-          totalAvailable: 15,
-          numberCheckedOut: 5,
-        },
-      ],
-    },
-    {
-      name: "Project C",
-      users: ["user a", "user b", "user c"],
-      hardware: [
-        {
-          name: "HWSET 1",
-          description: "Raspberry Pi 4, Arduino Uno, and more",
-          totalAvailable: 10,
-          numberCheckedOut: 2,
-        },
-        {
-          name: "HWSET 2",
-          description: "Hard drive and microcontroller",
-          totalAvailable: 15,
-          numberCheckedOut: 5,
-        },
-      ],
-    },
-  ];
-
-  const handleCheckoutRequest = (projectIndex, hardwareIndex, value) => {
-    const key = `${projectIndex}-${hardwareIndex}`;
-    setCheckoutRequests({ ...checkoutRequests, [key]: value });
-  };
-
-  const handleCheckout = (projectIndex, hardwareIndex) => {
-    const key = `${projectIndex}-${hardwareIndex}`;
-    const project = projects[projectIndex];
-    const hardware = project.hardware[hardwareIndex];
-    const numberToCheckOut = parseInt(checkoutRequests[key] || 0);
-    if (
-      numberToCheckOut > 0 &&
-      numberToCheckOut <= hardware.totalAvailable - hardware.numberCheckedOut
-    ) {
-      hardware.numberCheckedOut += numberToCheckOut;
-      hardware.totalAvailable -= numberToCheckOut;
-      setCheckoutRequests({ ...checkoutRequests, [key]: "" });
-    }
-  };
+  const [projects, setProjects] = useState([]);
 
   const handleOpenJoinDialog = () => {
     setOpenJoinDialog(true);
@@ -152,6 +65,60 @@ export default function Dashboard() {
     setProjectId("");
     setProjectName("");
     setProjectDescription("");
+  };
+
+  const handleJoinProject = () => {
+    // Placeholder for joining a project
+    setProjects([
+      ...projects,
+      {
+        id: projectId,
+        name: `Joined Project ${projectId}`,
+        description: "Description for joined project",
+        hardware: [
+          {
+            name: "HWSET 1",
+            description: "Raspberry Pi 4, Arduino Uno, and more",
+            totalAvailable: 10,
+            numberCheckedOut: 2,
+          },
+          {
+            name: "HWSET 2",
+            description: "Hard drive and microcontroller",
+            totalAvailable: 15,
+            numberCheckedOut: 5,
+          },
+        ],
+      },
+    ]);
+    handleCloseJoinDialog();
+  };
+
+  const handleCreateProject = () => {
+    // Placeholder for creating a new project
+    setProjects([
+      ...projects,
+      {
+        id: projectId,
+        name: projectName,
+        description: projectDescription,
+        hardware: [
+          {
+            name: "HWSET 1",
+            description: "Raspberry Pi 4, Arduino Uno, and more",
+            totalAvailable: 10,
+            numberCheckedOut: 2,
+          },
+          {
+            name: "HWSET 2",
+            description: "Hard drive and microcontroller",
+            totalAvailable: 15,
+            numberCheckedOut: 5,
+          },
+        ],
+      },
+    ]);
+    handleCloseCreateDialog();
   };
 
   return (
@@ -177,79 +144,11 @@ export default function Dashboard() {
         >
           Join Existing Project
         </Button>
-        {projects.map((project, projectIndex) => (
-          <div key={projectIndex} style={{ marginBottom: "40px" }}>
-            <Typography variant="h5" gutterBottom>
-              {project.name}
-            </Typography>
-            <Typography variant="h6">Authorized Users</Typography>
-            <List>
-              {project.users.map((user, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={user} />
-                </ListItem>
-              ))}
-            </List>
-            <Typography variant="h6">Hardware Components</Typography>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Hardware Name</TableCell>
-                    <TableCell>Hardware Description</TableCell>
-                    <TableCell>Total Available</TableCell>
-                    <TableCell>Number Checked Out</TableCell>
-                    <TableCell>Request to Check Out</TableCell>
-                    <TableCell>Action</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {project.hardware.map((hardware, hardwareIndex) => (
-                    <TableRow key={hardwareIndex}>
-                      <TableCell>{hardware.name}</TableCell>
-                      <TableCell>{hardware.description}</TableCell>
-                      <TableCell>{hardware.totalAvailable}</TableCell>
-                      <TableCell>{hardware.numberCheckedOut}</TableCell>
-                      <TableCell>
-                        <Slider
-                          value={
-                            checkoutRequests[
-                              `${projectIndex}-${hardwareIndex}`
-                            ] || 0
-                          }
-                          onChange={(e, value) =>
-                            handleCheckoutRequest(
-                              projectIndex,
-                              hardwareIndex,
-                              value,
-                            )
-                          }
-                          aria-labelledby="continuous-slider"
-                          min={0}
-                          max={
-                            hardware.totalAvailable - hardware.numberCheckedOut
-                          }
-                          valueLabelDisplay="auto"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() =>
-                            handleCheckout(projectIndex, hardwareIndex)
-                          }
-                        >
-                          Check Out
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-        ))}
+        <div>
+          {projects.map((project) => (
+            <ProjectCard key={project.id} project={project} />
+          ))}
+        </div>
       </Container>
 
       {/* Join Existing Project Dialog */}
@@ -273,7 +172,7 @@ export default function Dashboard() {
           <Button onClick={handleCloseJoinDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCloseJoinDialog} color="primary">
+          <Button onClick={handleJoinProject} color="primary">
             Join
           </Button>
         </DialogActions>
@@ -317,7 +216,7 @@ export default function Dashboard() {
           <Button onClick={handleCloseCreateDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCloseCreateDialog} color="primary">
+          <Button onClick={handleCreateProject} color="primary">
             Create
           </Button>
         </DialogActions>
