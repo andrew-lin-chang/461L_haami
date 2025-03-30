@@ -58,10 +58,11 @@ def login():
         return jsonify({"message": "userid and password are required"}), 400
 
     user = User.objects(userid=userid).first()
-    print(data)
-    print(user.password)
-    if not user or not bcrypt.check_password_hash(user.password, password):
-        return jsonify({"message": "Invalid userid or password"}), 401
+    if not user:
+        return jsonify({"message": "User does not exist"}), 400
+
+    elif not bcrypt.check_password_hash(user.password, password):
+        return jsonify({"message": "Invalid password"}), 400
 
     return jsonify({"message": "Login successful"}), 200
 
