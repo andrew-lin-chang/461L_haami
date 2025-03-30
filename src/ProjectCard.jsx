@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import {
   Card,
   CardContent,
-  CardActions,
   Typography,
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -13,13 +11,19 @@ import {
   TableRow,
   Paper,
   Slider,
+  Button,
 } from "@mui/material";
 
 export default function ProjectCard({ project }) {
   const [checkoutRequests, setCheckoutRequests] = useState({});
+  const [checkinRequests, setCheckinRequests] = useState({});
 
   const handleCheckoutRequest = (hardwareIndex, value) => {
     setCheckoutRequests({ ...checkoutRequests, [hardwareIndex]: value });
+  };
+
+  const handleCheckinRequest = (hardwareIndex, value) => {
+    setCheckinRequests({ ...checkinRequests, [hardwareIndex]: value });
   };
 
   const handleCheckout = (hardwareIndex) => {
@@ -32,6 +36,16 @@ export default function ProjectCard({ project }) {
       hardware.numberCheckedOut += numberToCheckOut;
       hardware.totalAvailable -= numberToCheckOut;
       setCheckoutRequests({ ...checkoutRequests, [hardwareIndex]: "" });
+    }
+  };
+
+  const handleCheckin = (hardwareIndex) => {
+    const hardware = project.hardware[hardwareIndex];
+    const numberToCheckIn = parseInt(checkinRequests[hardwareIndex] || 0);
+    if (numberToCheckIn > 0 && numberToCheckIn <= hardware.numberCheckedOut) {
+      hardware.numberCheckedOut -= numberToCheckIn;
+      hardware.totalAvailable += numberToCheckIn;
+      setCheckinRequests({ ...checkinRequests, [hardwareIndex]: "" });
     }
   };
 
@@ -50,6 +64,8 @@ export default function ProjectCard({ project }) {
                 <TableCell>Number Checked Out</TableCell>
                 <TableCell>Request to Check Out</TableCell>
                 <TableCell>Action</TableCell>
+                <TableCell>Request to Check In</TableCell>
+                <TableCell>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -65,7 +81,7 @@ export default function ProjectCard({ project }) {
                       onChange={(e, value) =>
                         handleCheckoutRequest(hardwareIndex, value)
                       }
-                      aria-labelledby="continuous-slider"
+                      aria-labelledby="checkout-slider"
                       min={0}
                       max={hardware.totalAvailable - hardware.numberCheckedOut}
                       valueLabelDisplay="auto"
@@ -78,6 +94,27 @@ export default function ProjectCard({ project }) {
                       onClick={() => handleCheckout(hardwareIndex)}
                     >
                       Check Out
+                    </Button>
+                  </TableCell>
+                  <TableCell>
+                    <Slider
+                      value={checkinRequests[hardwareIndex] || 0}
+                      onChange={(e, value) =>
+                        handleCheckinRequest(hardwareIndex, value)
+                      }
+                      aria-labelledby="checkin-slider"
+                      min={0}
+                      max={hardware.numberCheckedOut}
+                      valueLabelDisplay="auto"
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      onClick={() => handleCheckin(hardwareIndex)}
+                    >
+                      Check In
                     </Button>
                   </TableCell>
                 </TableRow>
