@@ -2,89 +2,153 @@ import React, { useState } from "react";
 import {
   Card,
   CardContent,
-  CardActions,
   Typography,
-  Button,
   Table,
-  TableBody,
-  TableCell,
-  TableContainer,
   TableHead,
+  TableBody,
   TableRow,
-  Paper,
+  TableCell,
   Slider,
+  Button,
+  List,
+  ListItem,
+  ListItemText,
 } from "@mui/material";
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, hardwareSets }) {
   const [checkoutRequests, setCheckoutRequests] = useState({});
+  const [checkinRequests, setCheckinRequests] = useState({});
+  const [localHardwareSets, setLocalHardwareSets] = useState(hardwareSets);
 
-  const handleCheckoutRequest = (hardwareIndex, value) => {
-    setCheckoutRequests({ ...checkoutRequests, [hardwareIndex]: value });
+  const handleSliderChange = (type, name, value) => {
+    if (type === "out") {
+      setCheckoutRequests({ ...checkoutRequests, [name]: value });
+    } else {
+      setCheckinRequests({ ...checkinRequests, [name]: value });
+    }
   };
 
-  const handleCheckout = (hardwareIndex) => {
-    const hardware = project.hardware[hardwareIndex];
-    const numberToCheckOut = parseInt(checkoutRequests[hardwareIndex] || 0);
-    if (
-      numberToCheckOut > 0 &&
-      numberToCheckOut <= hardware.totalAvailable - hardware.numberCheckedOut
-    ) {
-      hardware.numberCheckedOut += numberToCheckOut;
-      hardware.totalAvailable -= numberToCheckOut;
-      setCheckoutRequests({ ...checkoutRequests, [hardwareIndex]: "" });
-    }
+  const handleCheckout = (name) => {
+    const amount = checkoutRequests[name] || 0;
+    setLocalHardwareSets((prev) =>
+      prev.map((hw) =>
+        hw.name === name
+          ? {
+              ...hw,
+              numberCheckedOut: hw.numberCheckedOut + amount,
+              totalAvailable: hw.totalAvailable - amount,
+            }
+          : hw,
+      ),
+    );
+    setCheckoutRequests({ ...checkoutRequests, [name]: 0 });
+
+    // TODO: Replace with backend call
+    // fetch("/api/checkout", { method: "POST", body: JSON.stringify({ name, amount }) });
+  };
+
+  const handleCheckin = (name) => {
+    const amount = checkinRequests[name] || 0;
+    setLocalHardwareSets((prev) =>
+      prev.map((hw) =>
+        hw.name === name
+          ? {
+              ...hw,
+              numberCheckedOut: hw.numberCheckedOut - amount,
+              totalAvailable: hw.totalAvailable + amount,
+            }
+          : hw,
+      ),
+    );
+    setCheckinRequests({ ...checkinRequests, [name]: 0 });
+
+    // TODO: Replace with backend call
+    // fetch("/api/checkin", { method: "POST", body: JSON.stringify({ name, amount }) });
   };
 
   return (
     <Card style={{ marginBottom: "20px" }}>
       <CardContent>
-        <Typography variant="h5">{project.name}</Typography>
-        <Typography variant="body2">{project.description}</Typography>
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Hardware Sets</TableCell>
-                <TableCell>Hardware Description</TableCell>
-                <TableCell>Total Available</TableCell>
-                <TableCell>Number Checked Out</TableCell>
-                <TableCell>Request to Check Out</TableCell>
-                <TableCell>Action</TableCell>
+        <Typography variant="h6">{project.name}</Typography>
+
+        <Typography variant="subtitle1" style={{ marginTop: "10px" }}>
+          Authorized Users
+        </Typography>
+        <List>
+          {project.users.map((user, index) => (
+            <ListItem key={index}>
+              <ListItemText primary={user} />
+            </ListItem>
+          ))}
+        </List>
+
+        <Typography variant="subtitle1" style={{ marginTop: "10px" }}>
+          Hardware Components (Shared)
+        </Typography>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Hardware Set</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Total Available</TableCell>
+              <TableCell>Checked Out</TableCell>
+              <TableCell>Request to Check Out</TableCell>
+              <TableCell>Action</TableCell>
+              <TableCell>Request to Check In</TableCell>
+              <TableCell>Action</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {localHardwareSets.map((hw, index) => (
+              <TableRow key={index}>
+                <TableCell>{hw.name}</TableCell>
+                <TableCell>{hw.description}</TableCell>
+                <TableCell>{hw.totalAvailable}</TableCell>
+                <TableCell>{hw.numberCheckedOut}</TableCell>
+                <TableCell>
+                  <Slider
+                    value={checkoutRequests[hw.name] || 0}
+                    min={0}
+                    max={hw.totalAvailable}
+                    onChange={(e, value) =>
+                      handleSliderChange("out", hw.name, value)
+                    }
+                    valueLabelDisplay="auto"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="warning"
+                    onClick={() => handleCheckout(hw.name)}
+                  >
+                    Check Out
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  <Slider
+                    value={checkinRequests[hw.name] || 0}
+                    min={0}
+                    max={hw.numberCheckedOut}
+                    onChange={(e, value) =>
+                      handleSliderChange("in", hw.name, value)
+                    }
+                    valueLabelDisplay="auto"
+                  />
+                </TableCell>
+                <TableCell>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={() => handleCheckin(hw.name)}
+                  >
+                    Check In
+                  </Button>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {project.hardware.map((hardware, hardwareIndex) => (
-                <TableRow key={hardwareIndex}>
-                  <TableCell>{hardware.name}</TableCell>
-                  <TableCell>{hardware.description}</TableCell>
-                  <TableCell>{hardware.totalAvailable}</TableCell>
-                  <TableCell>{hardware.numberCheckedOut}</TableCell>
-                  <TableCell>
-                    <Slider
-                      value={checkoutRequests[hardwareIndex] || 0}
-                      onChange={(e, value) =>
-                        handleCheckoutRequest(hardwareIndex, value)
-                      }
-                      aria-labelledby="continuous-slider"
-                      min={0}
-                      max={hardware.totalAvailable - hardware.numberCheckedOut}
-                      valueLabelDisplay="auto"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleCheckout(hardwareIndex)}
-                    >
-                      Check Out
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            ))}
+          </TableBody>
+        </Table>
       </CardContent>
     </Card>
   );

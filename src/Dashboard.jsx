@@ -1,20 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Container, Typography, AppBar, Toolbar, Button } from "@mui/material";
 import ProjectCard from "./ProjectCard";
 
 export default function Dashboard() {
-  const [projects, setProjects] = useState([]);
-  const [hardwareSets, setHardwareSets] = useState([]);
+  const [projects] = useState([
+    {
+      name: "new project",
+      users: ["user a", "user b"],
+    },
+    {
+      name: "test project",
+      users: ["user c", "user d"],
+    },
+  ]);
 
-  useEffect(() => {
-    fetch("/api/projects")
-      .then((res) => res.json())
-      .then((data) => setProjects(data));
-
-    fetch("/api/hardware")
-      .then((res) => res.json())
-      .then((data) => setHardwareSets(data));
-  }, []);
+  const [hardwareSets] = useState([
+    {
+      name: "HWSET 1",
+      description: "Raspberry Pi 4, Arduino Uno, and more",
+      totalAvailable: 10,
+      numberCheckedOut: 2,
+    },
+    {
+      name: "HWSET 2",
+      description: "Hard drive and microcontroller",
+      totalAvailable: 15,
+      numberCheckedOut: 5,
+    },
+  ]);
 
   return (
     <div>
@@ -33,6 +46,17 @@ export default function Dashboard() {
         <Typography variant="h4" gutterBottom>
           XYZ User's Projects
         </Typography>
+
+        <Button
+          variant="contained"
+          color="warning"
+          style={{ marginRight: "10px" }}
+        >
+          CREATE NEW PROJECT
+        </Button>
+        <Button variant="contained" color="secondary">
+          JOIN EXISTING PROJECT
+        </Button>
 
         {projects.map((project, index) => (
           <ProjectCard
