@@ -49,22 +49,6 @@ export default function Dashboard() {
   });
   const [projects, setProjects] = useState([]);
 
-  const handleOpenJoinDialog = () => {
-    setOpenJoinDialog(true);
-  };
-
-  const handleCloseJoinDialog = () => {
-    setOpenJoinDialog(false);
-  };
-
-  const handleOpenCreateDialog = () => {
-    setOpenCreateDialog(true);
-  };
-
-  const handleCloseCreateDialog = () => {
-    setOpenCreateDialog(false);
-  };
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -114,7 +98,7 @@ export default function Dashboard() {
           variant="contained"
           color="primary"
           style={{ marginBottom: "20px", marginRight: "10px" }}
-          onClick={handleOpenCreateDialog}
+          onClick={() => setOpenCreateDialog(true)}
         >
           Create New Project
         </Button>
@@ -122,7 +106,7 @@ export default function Dashboard() {
           variant="contained"
           color="secondary"
           style={{ marginBottom: "20px" }}
-          onClick={handleOpenJoinDialog}
+          onClick={() => setOpenJoinDialog(true)}
         >
           Join Existing Project
         </Button>
@@ -134,7 +118,7 @@ export default function Dashboard() {
       </Container>
 
       {/* Join Existing Project Dialog */}
-      <Dialog open={openJoinDialog} onClose={handleCloseJoinDialog}>
+      <Dialog open={openJoinDialog} onClose={() => setOpenJoinDialog(false)}>
         <DialogTitle>Join Existing Project</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -147,12 +131,12 @@ export default function Dashboard() {
             name="project_id"
             type="text"
             fullWidth
-            value={formData.projectId}
+            value={formData.project_id}
             onChange={handleChange}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseJoinDialog} color="primary">
+          <Button onClick={() => setOpenJoinDialog(false)} color="primary">
             Cancel
           </Button>
           <Button onClick={handleJoinProject} color="primary">
@@ -162,7 +146,10 @@ export default function Dashboard() {
       </Dialog>
 
       {/* Create New Project Dialog */}
-      <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog}>
+      <Dialog
+        open={openCreateDialog}
+        onClose={() => setOpenCreateDialog(false)}
+      >
         <DialogTitle>Create New Project</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -176,7 +163,7 @@ export default function Dashboard() {
             name="project_id"
             type="text"
             fullWidth
-            value={formData.projectId}
+            value={formData.project_id}
             onChange={handleChange}
           />
           <TextField
@@ -185,7 +172,7 @@ export default function Dashboard() {
             name="project_name"
             type="text"
             fullWidth
-            value={formData.projectName}
+            value={formData.project_name}
             onChange={handleChange}
           />
           <TextField
@@ -194,12 +181,12 @@ export default function Dashboard() {
             name="description"
             type="text"
             fullWidth
-            value={formData.projectDescription}
+            value={formData.description}
             onChange={handleChange}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseCreateDialog} color="primary">
+          <Button onClick={() => setOpenCreateDialog(false)} color="primary">
             Cancel
           </Button>
           <Button onClick={handleCreateProject} color="primary">
