@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
@@ -48,6 +48,24 @@ export default function Dashboard() {
     description: "",
   });
   const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        let response = await fetch("http://localhost:5000/project");
+        if (response.ok) {
+          let data = await response.json();
+          setProjects(data);
+        } else {
+          console.error("Error fetching projects");
+        }
+      } catch (err) {
+        console.error("Error fetching projects:", err);
+      }
+    };
+
+    fetchProjects();
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -111,9 +129,10 @@ export default function Dashboard() {
           Join Existing Project
         </Button>
         <div>
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
+          {projects &&
+            projects.map((project) => (
+              <ProjectCard key={project.project_id} project={project} />
+            ))}
         </div>
       </Container>
 

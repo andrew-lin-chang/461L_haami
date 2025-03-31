@@ -66,6 +66,20 @@ def login():
 
     return jsonify({"message": "Login successful"}), 200
 
+@app.get("/project")
+def get_projects():
+    projects = Project.objects()
+    project_list = []
+    for project in projects:
+        project_list.append({
+            "project_id": project.project_id,
+            "project_name": project.project_name,
+            "description": project.description,
+            "authorized_users": [user.userid for user in project.authorized_users],
+            "hardware": [hardware.name for hardware in project.hardware_list]
+        })
+    return jsonify(project_list), 200
+
 @app.post("/project")
 def create_project():
     data = request.json
