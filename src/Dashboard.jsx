@@ -51,9 +51,11 @@ function Header() {
 export default function Dashboard() {
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
-  const [projectId, setProjectId] = useState("");
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
+  const [formData, setFormData] = useState({
+    project_id: "",
+    project_name: "",
+    description: "",
+  });
   const [projects, setProjects] = useState([]);
 
   const handleOpenJoinDialog = () => {
@@ -62,7 +64,6 @@ export default function Dashboard() {
 
   const handleCloseJoinDialog = () => {
     setOpenJoinDialog(false);
-    setProjectId("");
   };
 
   const handleOpenCreateDialog = () => {
@@ -71,63 +72,44 @@ export default function Dashboard() {
 
   const handleCloseCreateDialog = () => {
     setOpenCreateDialog(false);
-    setProjectId("");
-    setProjectName("");
-    setProjectDescription("");
   };
 
-  const handleJoinProject = () => {
-    // Placeholder for joining a project
-    setProjects([
-      ...projects,
-      {
-        id: projectId,
-        name: `Joined Project ${projectId}`,
-        description: "Description for joined project",
-        hardware: [
-          {
-            name: "HWSET 1",
-            description: "Raspberry Pi 4, Arduino Uno, and more",
-            totalAvailable: 10,
-            numberCheckedOut: 2,
-          },
-          {
-            name: "HWSET 2",
-            description: "Hard drive and microcontroller",
-            totalAvailable: 15,
-            numberCheckedOut: 5,
-          },
-        ],
-      },
-    ]);
-    handleCloseJoinDialog();
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleCreateProject = () => {
-    // Placeholder for creating a new project
-    setProjects([
-      ...projects,
-      {
-        id: projectId,
-        name: projectName,
-        description: projectDescription,
-        hardware: [
-          {
-            name: "HWSET 1",
-            description: "Raspberry Pi 4, Arduino Uno, and more",
-            totalAvailable: 10,
-            numberCheckedOut: 2,
-          },
-          {
-            name: "HWSET 2",
-            description: "Hard drive and microcontroller",
-            totalAvailable: 15,
-            numberCheckedOut: 5,
-          },
-        ],
-      },
-    ]);
-    handleCloseCreateDialog();
+  const handleJoinProject = () => {};
+
+  const handleCreateProject = async (e) => {
+    e.preventDefault();
+
+    const newProject = {
+      project_id: formData.project_id,
+      project_name: formData.project_name,
+      description: formData.description,
+      authorized_users: [],
+      hardware: [],
+    };
+
+    try {
+      let response = await fetch("http://localhost:5000/project", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProject),
+      });
+
+      if (response.ok) {
+        setProjects([...projects, newProject]);
+      } else {
+        const data = await response.json();
+        console.error(data);
+        alert("Error creating project: " + data.message);
+      }
+    } catch (err) {
+      console.error("Error creating project:", err);
+    }
   };
 
   return (
@@ -171,10 +153,11 @@ export default function Dashboard() {
             autoFocus
             margin="dense"
             label="Project ID"
+            name="project_id"
             type="text"
             fullWidth
-            value={projectId}
-            onChange={(e) => setProjectId(e.target.value)}
+            value={formData.projectId}
+            onChange={handleChange}
           />
         </DialogContent>
         <DialogActions>
@@ -199,26 +182,29 @@ export default function Dashboard() {
             autoFocus
             margin="dense"
             label="Project ID"
+            name="project_id"
             type="text"
             fullWidth
-            value={projectId}
-            onChange={(e) => setProjectId(e.target.value)}
+            value={formData.projectId}
+            onChange={handleChange}
           />
           <TextField
             margin="dense"
             label="Project Name"
+            name="project_name"
             type="text"
             fullWidth
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
+            value={formData.projectName}
+            onChange={handleChange}
           />
           <TextField
             margin="dense"
             label="Project Description"
+            name="description"
             type="text"
             fullWidth
-            value={projectDescription}
-            onChange={(e) => setProjectDescription(e.target.value)}
+            value={formData.projectDescription}
+            onChange={handleChange}
           />
         </DialogContent>
         <DialogActions>

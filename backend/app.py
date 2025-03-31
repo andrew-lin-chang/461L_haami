@@ -80,30 +80,5 @@ def create_project():
         project.save()
         return jsonify({"message": "Project created successfully"}), 200
 
-@app.route("/login", methods=["POST"])
-def login():
-    data = request.json
-    username = data.get("username")
-    password = data.get("password")
-
-    if not username or not password:
-        return jsonify({"error": "Username and password are required"}), 400
-
-    user = User.objects(username=username).first()
-    if not user or not bcrypt.check_password_hash(user.password, password):
-        return jsonify({"error": "Invalid username or password"}), 401
-
-    return jsonify({"message": "Login successful"}), 200
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     app.run(debug=True)
