@@ -15,6 +15,11 @@ import {
 import ProjectCard from "./ProjectCard";
 
 function Header() {
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Clear token or user session
+    window.location.href = "/login"; // Redirect to login page
+  };
+
   return (
     <AppBar
       position="fixed"
@@ -34,6 +39,10 @@ function Header() {
         >
           haami
         </Typography>
+
+        <Button variant="outlined" color="inherit" onClick={handleLogout}>
+          Logout
+        </Button>
       </Toolbar>
     </AppBar>
   );
