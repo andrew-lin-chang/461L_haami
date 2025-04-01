@@ -181,8 +181,8 @@ export default function Dashboard() {
         <DialogTitle>Create New Project</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Please enter the Project ID, Project Name, and Project Description
-            to create a new project.
+            Please enter the Project ID, Name, and Description to create a new
+            project.
           </DialogContentText>
           <TextField
             autoFocus
