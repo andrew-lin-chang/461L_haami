@@ -1,21 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AppBar,
   Toolbar,
   Typography,
   Container,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
   Button,
-  Slider,
-  List,
-  ListItem,
-  ListItemText,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,8 +12,14 @@ import {
   DialogTitle,
   TextField,
 } from "@mui/material";
+import ProjectCard from "./ProjectCard";
 
 function Header() {
+  const handleLogout = () => {
+    localStorage.removeItem("token"); // Clear token or user session
+    window.location.href = "/login"; // Redirect to login page
+  };
+
   return (
     <AppBar
       position="fixed"
@@ -44,112 +39,79 @@ function Header() {
         >
           haami
         </Typography>
+
+        <Button variant="outlined" color="inherit" onClick={handleLogout}>
+          Logout
+        </Button>
       </Toolbar>
     </AppBar>
   );
 }
 
 export default function Dashboard() {
-  const [checkoutRequests, setCheckoutRequests] = useState({});
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
-  const [projectId, setProjectId] = useState("");
-  const [projectName, setProjectName] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
+  const [formData, setFormData] = useState({
+    project_id: "",
+    project_name: "",
+    description: "",
+  });
+  const [projects, setProjects] = useState([]);
 
-  const [projectsState, setProjectsState] = useState([
-    {
-      name: "Project A",
-      users: ["user a", "user b", "user c"],
-      hardware: [
-        {
-          name: "HWSET 1",
-          description: "Raspberry Pi 4, Arduino Uno, and more",
-          totalAvailable: 10,
-          numberCheckedOut: 2,
-        },
-        {
-          name: "HWSET 2",
-          description: "Hard drive and microcontroller",
-          totalAvailable: 15,
-          numberCheckedOut: 5,
-        },
-      ],
-    },
-    {
-      name: "Project B",
-      users: ["user a", "user b", "user c"],
-      hardware: [
-        {
-          name: "HWSET 1",
-          description: "Raspberry Pi 4, Arduino Uno, and more",
-          totalAvailable: 10,
-          numberCheckedOut: 2,
-        },
-        {
-          name: "HWSET 2",
-          description: "Hard drive and microcontroller",
-          totalAvailable: 15,
-          numberCheckedOut: 5,
-        },
-      ],
-    },
-    {
-      name: "Project C",
-      users: ["user a", "user b", "user c"],
-      hardware: [
-        {
-          name: "HWSET 1",
-          description: "Raspberry Pi 4, Arduino Uno, and more",
-          totalAvailable: 10,
-          numberCheckedOut: 2,
-        },
-        {
-          name: "HWSET 2",
-          description: "Hard drive and microcontroller",
-          totalAvailable: 15,
-          numberCheckedOut: 5,
-        },
-      ],
-    },
-  ]);
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        let response = await fetch("http://localhost:5000/project");
+        if (response.ok) {
+          let data = await response.json();
+          setProjects(data);
+        } else {
+          console.error("Error fetching projects");
+        }
+      } catch (err) {
+        console.error("Error fetching projects:", err);
+      }
+    };
 
-  const handleCheckoutRequest = (projectIndex, hardwareIndex, value) => {
-    const key = `${projectIndex}-${hardwareIndex}`;
-    setCheckoutRequests({ ...checkoutRequests, [key]: value });
+    fetchProjects();
+  }, []);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleCheckout = (projectIndex, hardwareIndex) => {
-    const key = `${projectIndex}-${hardwareIndex}`;
-    const numberToCheckOut = parseInt(checkoutRequests[key] || 0);
+  const handleJoinProject = () => {};
 
-    if (numberToCheckOut <= 0) return;
+  const handleCreateProject = async (e) => {
+    e.preventDefault();
 
-    const updatedProjects = [...projectsState];
-    const hardware = updatedProjects[projectIndex].hardware[hardwareIndex];
-    const available = hardware.totalAvailable - hardware.numberCheckedOut;
+    const newProject = {
+      project_id: formData.project_id,
+      project_name: formData.project_name,
+      description: formData.description,
+      authorized_users: [],
+      hardware: [],
+    };
 
-    if (numberToCheckOut <= available) {
-      hardware.numberCheckedOut += numberToCheckOut;
-      setCheckoutRequests({ ...checkoutRequests, [key]: "" });
-      setProjectsState(updatedProjects); // updates UI
-    } else {
-      alert("Not enough hardware available to check out.");
+    try {
+      let response = await fetch("http://localhost:5000/project", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newProject),
+      });
+
+      if (response.ok) {
+        setProjects([...projects, newProject]);
+      } else {
+        const data = await response.json();
+        console.error(data);
+        alert("Error creating project: " + data.message);
+      }
+    } catch (err) {
+      console.error("Error creating project:", err);
     }
-  };
-
-  const handleOpenJoinDialog = () => setOpenJoinDialog(true);
-  const handleCloseJoinDialog = () => {
-    setOpenJoinDialog(false);
-    setProjectId("");
-  };
-
-  const handleOpenCreateDialog = () => setOpenCreateDialog(true);
-  const handleCloseCreateDialog = () => {
-    setOpenCreateDialog(false);
-    setProjectId("");
-    setProjectName("");
-    setProjectDescription("");
   };
 
   return (
@@ -163,7 +125,7 @@ export default function Dashboard() {
           variant="contained"
           color="primary"
           style={{ marginBottom: "20px", marginRight: "10px" }}
-          onClick={handleOpenCreateDialog}
+          onClick={() => setOpenCreateDialog(true)}
         >
           Create New Project
         </Button>
@@ -171,87 +133,20 @@ export default function Dashboard() {
           variant="contained"
           color="secondary"
           style={{ marginBottom: "20px" }}
-          onClick={handleOpenJoinDialog}
+          onClick={() => setOpenJoinDialog(true)}
         >
           Join Existing Project
         </Button>
-        {projectsState.map((project, projectIndex) => (
-          <div key={projectIndex} style={{ marginBottom: "40px" }}>
-            <Typography variant="h5" gutterBottom>
-              {project.name}
-            </Typography>
-            <Typography variant="h6">Authorized Users</Typography>
-            <List>
-              {project.users.map((user, index) => (
-                <ListItem key={index}>
-                  <ListItemText primary={user} />
-                </ListItem>
-              ))}
-            </List>
-            <Typography variant="h6">Hardware Components</Typography>
-            <TableContainer component={Paper}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>Hardware Name</TableCell>
-                    <TableCell>Hardware Description</TableCell>
-                    <TableCell>Total Available</TableCell>
-                    <TableCell>Number Checked Out</TableCell>
-                    <TableCell>Request to Check Out</TableCell>
-                    <TableCell>Action</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {project.hardware.map((hardware, hardwareIndex) => (
-                    <TableRow key={hardwareIndex}>
-                      <TableCell>{hardware.name}</TableCell>
-                      <TableCell>{hardware.description}</TableCell>
-                      <TableCell>{hardware.totalAvailable}</TableCell>
-                      <TableCell>{hardware.numberCheckedOut}</TableCell>
-                      <TableCell>
-                        <Slider
-                          value={
-                            checkoutRequests[
-                              `${projectIndex}-${hardwareIndex}`
-                            ] || 0
-                          }
-                          onChange={(e, value) =>
-                            handleCheckoutRequest(
-                              projectIndex,
-                              hardwareIndex,
-                              value,
-                            )
-                          }
-                          aria-labelledby="continuous-slider"
-                          min={0}
-                          max={
-                            hardware.totalAvailable - hardware.numberCheckedOut
-                          }
-                          valueLabelDisplay="auto"
-                        />
-                      </TableCell>
-                      <TableCell>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          onClick={() =>
-                            handleCheckout(projectIndex, hardwareIndex)
-                          }
-                        >
-                          Check Out
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-        ))}
+        <div>
+          {projects &&
+            projects.map((project) => (
+              <ProjectCard key={project.project_id} project={project} />
+            ))}
+        </div>
       </Container>
 
-      {/* Join Dialog */}
-      <Dialog open={openJoinDialog} onClose={handleCloseJoinDialog}>
+      {/* Join Existing Project Dialog */}
+      <Dialog open={openJoinDialog} onClose={() => setOpenJoinDialog(false)}>
         <DialogTitle>Join Existing Project</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -261,24 +156,28 @@ export default function Dashboard() {
             autoFocus
             margin="dense"
             label="Project ID"
+            name="project_id"
             type="text"
             fullWidth
-            value={projectId}
-            onChange={(e) => setProjectId(e.target.value)}
+            value={formData.project_id}
+            onChange={handleChange}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseJoinDialog} color="primary">
+          <Button onClick={() => setOpenJoinDialog(false)} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCloseJoinDialog} color="primary">
+          <Button onClick={handleJoinProject} color="primary">
             Join
           </Button>
         </DialogActions>
       </Dialog>
 
-      {/* Create Dialog */}
-      <Dialog open={openCreateDialog} onClose={handleCloseCreateDialog}>
+      {/* Create New Project Dialog */}
+      <Dialog
+        open={openCreateDialog}
+        onClose={() => setOpenCreateDialog(false)}
+      >
         <DialogTitle>Create New Project</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -289,33 +188,36 @@ export default function Dashboard() {
             autoFocus
             margin="dense"
             label="Project ID"
+            name="project_id"
             type="text"
             fullWidth
-            value={projectId}
-            onChange={(e) => setProjectId(e.target.value)}
+            value={formData.project_id}
+            onChange={handleChange}
           />
           <TextField
             margin="dense"
             label="Project Name"
+            name="project_name"
             type="text"
             fullWidth
-            value={projectName}
-            onChange={(e) => setProjectName(e.target.value)}
+            value={formData.project_name}
+            onChange={handleChange}
           />
           <TextField
             margin="dense"
             label="Project Description"
+            name="description"
             type="text"
             fullWidth
-            value={projectDescription}
-            onChange={(e) => setProjectDescription(e.target.value)}
+            value={formData.description}
+            onChange={handleChange}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseCreateDialog} color="primary">
+          <Button onClick={() => setOpenCreateDialog(false)} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCloseCreateDialog} color="primary">
+          <Button onClick={handleCreateProject} color="primary">
             Create
           </Button>
         </DialogActions>
