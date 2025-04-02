@@ -1,7 +1,22 @@
 import os
 from mongoengine import connect
 from dotenv import load_dotenv
+from flask_bcrypt import generate_password_hash
 from schema import User, Project, Hardware, Checkout
+
+def reset():
+    User.drop_collection()
+    Project.drop_collection()
+    Hardware.drop_collection()
+    Checkout.drop_collection()
+
+def create_test_users():
+    hashed_password = generate_password_hash("password").decode("utf-8")
+    user = User(
+        userid="test",
+        password=hashed_password,
+    )
+    user.save()
 
 def create_test_hwsets():
     hwset1 = Hardware(
@@ -40,5 +55,8 @@ def setup():
 
 if __name__ == "__main__":
     setup()
+    reset()
+    create_test_users()
     create_test_hwsets()
     create_test_projects()
+    print("Test data created successfully :)")
