@@ -17,7 +17,7 @@ import ProjectCard from "./ProjectCard";
 function Header() {
   const handleLogout = () => {
     localStorage.removeItem("token"); // Clear token or user session
-    window.location.href = "/login"; // Redirect to login page
+    window.location.href = "/"; // Redirect to login page
   };
 
   return (
