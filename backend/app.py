@@ -74,9 +74,8 @@ def get_projects():
         project_list.append({
             "project_id": project.project_id,
             "project_name": project.project_name,
-            "description": project.description,
             "authorized_users": [user.userid for user in project.authorized_users],
-            "hardware": [hardware.name for hardware in project.hardware_list]
+            "hardware": [{"item": hw.item, "available": hw.available, "checked_out": hw.checked_out} for hw in project.hardware_list]
         })
     return jsonify(project_list), 200
 
