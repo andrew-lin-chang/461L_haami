@@ -12,8 +12,7 @@ class Project(Document):
     hardware_list = ListField(ReferenceField('Hardware'), default=list)
 
 class Hardware(Document):
-    name = StringField(required=True)
-    project = ReferenceField('Project', required=True)
+    item = StringField(required=True)
     available = IntField(required=True)
     checked_out = IntField(required=True)
     checkouts = ListField(ReferenceField('Checkout'), default=list)
