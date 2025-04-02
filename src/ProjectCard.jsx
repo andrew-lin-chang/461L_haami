@@ -59,7 +59,6 @@ export default function ProjectCard({ project }) {
             <TableHead>
               <TableRow>
                 <TableCell>Hardware Sets</TableCell>
-                <TableCell>Hardware Description</TableCell>
                 <TableCell>Total Available</TableCell>
                 <TableCell>Number Checked Out</TableCell>
                 <TableCell>Request to Check Out</TableCell>
@@ -72,7 +71,6 @@ export default function ProjectCard({ project }) {
               {project.hardware.map((hardware, hardwareIndex) => (
                 <TableRow key={hardwareIndex}>
                   <TableCell>{hardware.name}</TableCell>
-                  <TableCell>{hardware.description}</TableCell>
                   <TableCell>{hardware.totalAvailable}</TableCell>
                   <TableCell>{hardware.numberCheckedOut}</TableCell>
                   <TableCell>
