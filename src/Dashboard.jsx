@@ -80,7 +80,36 @@ export default function Dashboard() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleJoinProject = () => {};
+  const handleJoinProject = async (e) => {
+    e.preventDefault();
+    try {
+      const queryParams = new URLSearchParams(formData).toString();
+      let response = await fetch("http://localhost:5000/project", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const existingProject = {
+          project_id: formData.project_id,
+          project_name: formData.project_name,
+          description: formData.description,
+          authorized_users: formData.authorized_users,
+          hardware: [],
+        };
+        setProjects([...projects, existingProject]);
+      } else {
+        console.error(data);
+        alert("Error joining project: " + data.message);
+      }
+    } catch (err) {
+      console.error("Error joining project:", err);
+    }
+  };
 
   const handleCreateProject = async (e) => {
     e.preventDefault();
