@@ -87,10 +87,14 @@ def create_project():
     project_name = data.get("project_name")
     description = data.get("description")
 
+    # each project will have HWset1 and HWset2 by default
+    hardware_list = Hardware.objects()
+
     if Project.objects(project_id=project_id).first():
         return jsonify({"message": "Project ID already exists"}), 400
+    
     else:
-        project = Project(project_id=project_id, project_name=project_name, description=description)
+        project = Project(project_id=project_id, project_name=project_name, description=description, hardware_list=hardware_list)
         project.save()
         return jsonify({"message": "Project created successfully"}), 200
 
