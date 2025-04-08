@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 function Header() {
   return (
@@ -43,10 +44,11 @@ export default function Login() {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [invalidCredentials, setInvalidCredentials] = useState({
+  const [loginError, setLoginError] = useState({
     isError: false,
     message: "",
   });
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -84,12 +86,17 @@ export default function Login() {
 
       if (response.ok) {
         console.log(data);
+        login(data.token, formData.userid);
         navigate("/dashboard");
       } else {
         console.error(data);
-        setInvalidCredentials({ isError: true, message: data.message });
+        setLoginError({ isError: true, message: data.message });
       }
     } catch (err) {
+      setLoginError({
+        isError: true,
+        message: "Oopsie! A server error occurred",
+      });
       console.error(err);
     }
   };
@@ -97,9 +104,9 @@ export default function Login() {
   return (
     <Container maxWidth="xs" style={{ marginTop: 10 }}>
       <Header />
-      {invalidCredentials.isError && (
+      {loginError.isError && (
         <Typography color="error" style={{ marginBottom: 10 }}>
-          {invalidCredentials.message}
+          {loginError.message}
         </Typography>
       )}
       <Typography variant="h3" gutterBottom style={{ fontWeight: "bold" }}>
