@@ -9,18 +9,19 @@ from mongoengine import connect
 
 load_dotenv(dotenv_path="../.env")
 
-mongo_uri = os.getenv("MONGO_URI")
+MONGO_URI = os.getenv("MONGO_URI")
+JWT_SECRET = os.getenv("JWT_SECRET")
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 CORS(app, supports_credentials=True)
 
-connect("461L", host=mongo_uri)
+connect("461L", host=MONGO_URI)
 
 @app.route("/")
 def home():
     try:
-        client = MongoClient(mongo_uri)
+        client = MongoClient(MONGO_URI)
         client.admin.command("ping")
         return jsonify({"message": "Connected to MongoDB"}), 200
 
