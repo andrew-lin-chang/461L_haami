@@ -1,4 +1,6 @@
 import os
+import datetime
+import jwt
 from schema import User, Project, Hardware, Checkout
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
@@ -18,6 +20,19 @@ CORS(app, supports_credentials=True)
 
 connect("461L", host=MONGO_URI)
 
+def generate_jwt_token(userid):
+    """Generate a JWT token for the given user ID. Returns signed token for authentication."""
+    try:
+        payload = {
+            "userid": userid,
+            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1), # expires in 1 day
+            "iat": datetime.datetime.now(datetime.timezone.utc), # issued at time
+        }
+        token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+        return token
+    except Exception as e:
+        return jsonify({"message": "Error generating token", "error": str(e)}), 500
+
 @app.route("/")
 def home():
     try:
@@ -30,15 +45,11 @@ def home():
             {"message": "Failed to connect to MongoDB", "error": str(e)}
         ), 500
 
-
 @app.post("/signup")
 def signup():
     data = request.json
-    userid = data.get("userid").strip()
-    password = data.get("password").strip()
-
-    if not userid or not password:
-        return jsonify({"message": "userid and password are required"}), 400
+    userid = data.get("userid")
+    password = data.get("password")
 
     hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
 
@@ -47,16 +58,14 @@ def signup():
     else:
         user = User(userid=userid, password=hashed_password)
         user.save()
-        return jsonify({"message": "User registered successfully"}), 200
+        token = generate_jwt_token(userid)
+        return jsonify({"token": token, "message": "User registered successfully"}), 200
 
 @app.post("/login")
 def login():
     data = request.json
     userid = data.get("userid")
     password = data.get("password")
-
-    if not userid or not password:
-        return jsonify({"message": "userid and password are required"}), 400
 
     user = User.objects(userid=userid).first()
     if not user:
@@ -65,7 +74,9 @@ def login():
     elif not bcrypt.check_password_hash(user.password, password):
         return jsonify({"message": "Invalid password"}), 400
 
-    return jsonify({"message": "Login successful"}), 200
+    else:
+        token = generate_jwt_token(userid)
+        return jsonify({"token": token}), 200
 
 @app.get("/project")
 def get_projects():
