@@ -13,11 +13,13 @@ import {
   TextField,
 } from "@mui/material";
 import ProjectCard from "./ProjectCard";
+import { useAuth } from "./AuthContext";
 
 function Header() {
+  const { logout } = useAuth();
+
   const handleLogout = () => {
-    localStorage.removeItem("token"); // Clear token or user session
-    window.location.href = "/"; // Redirect to login page
+    logout();
   };
 
   return (
