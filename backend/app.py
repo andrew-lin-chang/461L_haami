@@ -36,34 +36,5 @@ def home():
             {"message": "Failed to connect to MongoDB", "error": str(e)}
         ), 500
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 if __name__ == "__main__":
     app.run(debug=True)
