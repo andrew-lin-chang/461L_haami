@@ -4,31 +4,21 @@ import jwt
 from schema import User, Project, Hardware, Checkout
 from flask import Flask, jsonify, request
 from pymongo import MongoClient
-from flask_bcrypt import Bcrypt
+from extensions import bcrypt
 from flask_cors import CORS
 from mongoengine import connect 
 from config import Config
+from routes.auth_routes import auth_routes
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-bcrypt = Bcrypt(app)
+bcrypt.init_app(app)
 CORS(app, supports_credentials=True)
 
 connect("461L", host=Config.MONGO_URI)
 
-def generate_jwt_token(userid):
-    """Generate a JWT token for the given user ID. Returns signed token for authentication."""
-    try:
-        payload = {
-            "userid": userid,
-            "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1), # expires in 1 day
-            "iat": datetime.datetime.now(datetime.timezone.utc), # issued at time
-        }
-        token = jwt.encode(payload, Config.JWT_SECRET, algorithm="HS256")
-        return token
-    except Exception as e:
-        return jsonify({"message": "Error generating token", "error": str(e)}), 500
+app.register_blueprint(auth_routes, url_prefix="/auth")
 
 @app.route("/")
 def home():
@@ -42,38 +32,6 @@ def home():
             {"message": "Failed to connect to MongoDB", "error": str(e)}
         ), 500
 
-@app.post("/signup")
-def signup():
-    data = request.json
-    userid = data.get("userid")
-    password = data.get("password")
-
-    hashed_password = bcrypt.generate_password_hash(password).decode("utf-8")
-
-    if User.objects(userid=userid).first():
-        return jsonify({"message": "User already exists"}), 400
-    else:
-        user = User(userid=userid, password=hashed_password)
-        user.save()
-        token = generate_jwt_token(userid)
-        return jsonify({"token": token, "message": "User registered successfully"}), 200
-
-@app.post("/login")
-def login():
-    data = request.json
-    userid = data.get("userid")
-    password = data.get("password")
-
-    user = User.objects(userid=userid).first()
-    if not user:
-        return jsonify({"message": "User does not exist"}), 400
-
-    elif not bcrypt.check_password_hash(user.password, password):
-        return jsonify({"message": "Invalid password"}), 400
-
-    else:
-        token = generate_jwt_token(userid)
-        return jsonify({"token": token}), 200
 
 @app.get("/project")
 def get_projects():

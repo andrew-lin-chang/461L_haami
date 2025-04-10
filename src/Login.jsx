@@ -65,7 +65,7 @@ export default function Login() {
     try {
       let response;
       if (isSignUp) {
-        response = await fetch("http://localhost:5000/signup", {
+        response = await fetch("http://localhost:5000/auth/signup", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -73,7 +73,7 @@ export default function Login() {
           body: JSON.stringify(formData),
         });
       } else {
-        response = await fetch("http://localhost:5000/login", {
+        response = await fetch("http://localhost:5000/auth/login", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
