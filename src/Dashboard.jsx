@@ -63,7 +63,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        let response = await fetch("http://localhost:5000/project");
+        let response = await fetch("http://localhost:5000/projects");
         if (response.ok) {
           let data = await response.json();
           setProjects(data);
@@ -86,7 +86,7 @@ export default function Dashboard() {
     e.preventDefault();
     try {
       const queryParams = new URLSearchParams(formData).toString();
-      let response = await fetch("http://localhost:5000/project", {
+      let response = await fetch("http://localhost:5000/projects/join", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -104,6 +104,7 @@ export default function Dashboard() {
           hardware: [],
         };
         setProjects([...projects, existingProject]);
+        setOpenJoinDialog(false);
       } else {
         console.error(data);
         alert("Error joining project: " + data.message);
@@ -125,7 +126,7 @@ export default function Dashboard() {
     };
 
     try {
-      let response = await fetch("http://localhost:5000/project", {
+      let response = await fetch("http://localhost:5000/projects/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -135,6 +136,7 @@ export default function Dashboard() {
 
       if (response.ok) {
         setProjects([...projects, newProject]);
+        setOpenCreateDialog(false);
       } else {
         const data = await response.json();
         console.error(data);

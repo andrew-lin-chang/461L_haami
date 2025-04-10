@@ -9,6 +9,7 @@ from flask_cors import CORS
 from mongoengine import connect 
 from config import Config
 from routes.auth_routes import auth_routes
+from routes.project_routes import project_routes
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -19,6 +20,7 @@ CORS(app, supports_credentials=True)
 connect("461L", host=Config.MONGO_URI)
 
 app.register_blueprint(auth_routes, url_prefix="/auth")
+app.register_blueprint(project_routes, url_prefix="/projects")
 
 @app.route("/")
 def home():
@@ -32,37 +34,6 @@ def home():
             {"message": "Failed to connect to MongoDB", "error": str(e)}
         ), 500
 
-
-@app.get("/project")
-def get_projects():
-    projects = Project.objects()
-    project_list = []
-    for project in projects:
-        project_list.append({
-            "project_id": project.project_id,
-            "project_name": project.project_name,
-            "authorized_users": [user.userid for user in project.authorized_users],
-            "hardware": [{"item": hw.item, "available": hw.available, "checked_out": hw.checked_out} for hw in project.hardware_list]
-        })
-    return jsonify(project_list), 200
-
-@app.post("/project")
-def create_project():
-    data = request.json
-    project_id = data.get("project_id")
-    project_name = data.get("project_name")
-    description = data.get("description")
-
-    # each project will have HWset1 and HWset2 by default
-    hardware_list = Hardware.objects()
-
-    if Project.objects(project_id=project_id).first():
-        return jsonify({"message": "Project ID already exists"}), 400
-    
-    else:
-        project = Project(project_id=project_id, project_name=project_name, description=description, hardware_list=hardware_list)
-        project.save()
-        return jsonify({"message": "Project created successfully"}), 200
 
 @app.post("/checkout")
 def checkout_hardware():
