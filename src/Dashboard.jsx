@@ -67,22 +67,22 @@ export default function Dashboard() {
   const { user } = useAuth();
 
   useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        let response = await fetch(`${apiUrl}/projects`);
-        if (response.ok) {
-          let data = await response.json();
-          setProjects(data);
-        } else {
-          console.error("Error fetching projects");
-        }
-      } catch (err) {
-        console.error("Error fetching projects:", err);
-      }
-    };
-
     fetchProjects();
   }, []);
+
+  const fetchProjects = async () => {
+    try {
+      let response = await fetch(`${apiUrl}/projects`);
+      if (response.ok) {
+        let data = await response.json();
+        setProjects(data);
+      } else {
+        console.error("Error fetching projects");
+      }
+    } catch (err) {
+      console.error("Error fetching projects:", err);
+    }
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -148,6 +148,7 @@ export default function Dashboard() {
         console.error(data);
         alert("Error creating project: " + data.message);
       }
+      fetchProjects();
     } catch (err) {
       console.error("Error creating project:", err);
     }
