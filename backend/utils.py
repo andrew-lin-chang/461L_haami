@@ -44,7 +44,7 @@ def create_test_projects():
     project2 = Project(
         project_id=456,
         project_name="Project 2",
-        description="Another of hardware components",
+        description="Another set of hardware components",
         hardware_list=[hwset1, hwset2]
     )
     project1.save()
