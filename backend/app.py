@@ -3,7 +3,6 @@ import datetime
 import jwt
 from schema import User, Project, Hardware, Checkout
 from flask import Flask, jsonify, request
-from dotenv import load_dotenv
 from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
