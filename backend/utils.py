@@ -21,13 +21,11 @@ def create_test_users():
 def create_test_hwsets():
     hwset1 = Hardware(
         item="Hardware Set 1",
-        description="A set of hardware components",
         available=10,
         checked_out=0,
     )
     hwset2 = Hardware(
         item="Hardware Set 2",
-        description="Another set of hardware components",
         available=10,
         checked_out=0,
     )
@@ -40,11 +38,13 @@ def create_test_projects():
     project1 = Project(
         project_id=123,
         project_name="Project 1",
+        description="A set of hardware components",
         hardware_list=[hwset1, hwset2]
     )
     project2 = Project(
         project_id=456,
         project_name="Project 2",
+        description="Another of hardware components",
         hardware_list=[hwset1, hwset2]
     )
     project1.save()
