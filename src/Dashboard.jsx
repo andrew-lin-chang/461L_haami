@@ -64,6 +64,7 @@ export default function Dashboard() {
     description: "",
   });
   const [projects, setProjects] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -157,7 +158,7 @@ export default function Dashboard() {
       <Header />
       <Container style={{ marginTop: "80px" }}>
         <Typography variant="h4" gutterBottom>
-          XYZ User's Projects
+          {user?.userid}'s Projects
         </Typography>
         <Button
           variant="contained"
