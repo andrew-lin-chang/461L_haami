@@ -117,8 +117,16 @@ export default function ProjectCard({ project }) {
 
   return (
     <Card style={{ marginBottom: "20px" }}>
-      <Typography variant="h5">{project.project_name}</Typography>
-      <Typography variant="body2">{project.description}</Typography>
+      <Typography align="left" sx={{ padding: "10px 10px" }} variant="h5">
+        {project.project_name}
+      </Typography>
+      <Typography
+        align="left"
+        sx={{ padding: "5px 10px", color: "gray" }}
+        variant="body2"
+      >
+        {project.description}
+      </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
