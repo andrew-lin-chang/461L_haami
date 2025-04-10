@@ -13,6 +13,8 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "./AuthContext";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function Header() {
   return (
     <AppBar
@@ -65,7 +67,7 @@ export default function Login() {
     try {
       let response;
       if (isSignUp) {
-        response = await fetch("http://localhost:5000/auth/signup", {
+        response = await fetch(`${apiUrl}/auth/signup`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -73,7 +75,7 @@ export default function Login() {
           body: JSON.stringify(formData),
         });
       } else {
-        response = await fetch("http://localhost:5000/auth/login", {
+        response = await fetch(`${apiUrl}/auth/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

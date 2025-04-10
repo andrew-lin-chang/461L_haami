@@ -15,6 +15,8 @@ import {
 import ProjectCard from "./ProjectCard";
 import { useAuth } from "./AuthContext";
 
+const apiUrl = import.meta.env.VITE_API_URL;
+
 function Header() {
   const { logout } = useAuth();
 
@@ -63,7 +65,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        let response = await fetch("http://localhost:5000/projects");
+        let response = await fetch(`${apiUrl}/projects`);
         if (response.ok) {
           let data = await response.json();
           setProjects(data);
@@ -86,7 +88,7 @@ export default function Dashboard() {
     e.preventDefault();
     try {
       const queryParams = new URLSearchParams(formData).toString();
-      let response = await fetch("http://localhost:5000/projects/join", {
+      let response = await fetch(`${apiUrl}/projects/join`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -126,7 +128,7 @@ export default function Dashboard() {
     };
 
     try {
-      let response = await fetch("http://localhost:5000/projects/create", {
+      let response = await fetch(`${apiUrl}/projects/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
