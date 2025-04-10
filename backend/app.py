@@ -8,17 +8,15 @@ from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from mongoengine import connect 
-
-load_dotenv(dotenv_path="../.env")
-
-MONGO_URI = os.getenv("MONGO_URI")
-JWT_SECRET = os.getenv("JWT_SECRET")
+from config import Config
 
 app = Flask(__name__)
+app.config.from_object(Config)
+
 bcrypt = Bcrypt(app)
 CORS(app, supports_credentials=True)
 
-connect("461L", host=MONGO_URI)
+connect("461L", host=Config.MONGO_URI)
 
 def generate_jwt_token(userid):
     """Generate a JWT token for the given user ID. Returns signed token for authentication."""
@@ -28,7 +26,7 @@ def generate_jwt_token(userid):
             "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1), # expires in 1 day
             "iat": datetime.datetime.now(datetime.timezone.utc), # issued at time
         }
-        token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
+        token = jwt.encode(payload, Config.JWT_SECRET, algorithm="HS256")
         return token
     except Exception as e:
         return jsonify({"message": "Error generating token", "error": str(e)}), 500
@@ -36,7 +34,7 @@ def generate_jwt_token(userid):
 @app.route("/")
 def home():
     try:
-        client = MongoClient(MONGO_URI)
+        client = MongoClient(Config.MONGO_URI)
         client.admin.command("ping")
         return jsonify({"message": "Connected to MongoDB"}), 200
 
