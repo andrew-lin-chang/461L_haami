@@ -11,7 +11,7 @@ import {
   TableHead,
   TableRow,
   Paper,
-  Slider,
+  Box,
   Button,
 } from "@mui/material";
 
@@ -117,9 +117,18 @@ export default function ProjectCard({ project }) {
 
   return (
     <Card style={{ marginBottom: "20px" }}>
-      <Typography align="left" sx={{ padding: "10px 10px" }} variant="h5">
-        {project.project_name}
-      </Typography>
+      <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Typography align="left" sx={{ padding: "10px 10px" }} variant="h5">
+          {project.project_name}
+        </Typography>
+        <Typography
+          align="right"
+          sx={{ padding: "10px 10px", color: "gray" }}
+          variant="body1"
+        >
+          ID: {project.project_id}
+        </Typography>
+      </Box>
       <Typography
         align="left"
         sx={{ padding: "5px 10px", color: "gray" }}
