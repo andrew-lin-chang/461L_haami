@@ -8,7 +8,7 @@ def checkout_hardware():
     data = request.json
     userid = data.get("userid")
     item = data.get("item")
-    quantity = data.get("quantity")
+    quantity = int(data.get("quantity"))
 
     # Validate input
     if not userid or not item or not quantity:
@@ -51,7 +51,7 @@ def checkin_hardware():
     data = request.json
     userid = data.get("userid")
     item = data.get("item")
-    quantity = data.get("quantity")
+    quantity = int(data.get("quantity"))
 
     # Validate input
     if not userid or not item or not quantity:
