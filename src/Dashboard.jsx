@@ -14,14 +14,17 @@ import {
 } from "@mui/material";
 import ProjectCard from "./ProjectCard";
 import { useAuth } from "./AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function Header() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
+    navigate("/login");
   };
 
   return (

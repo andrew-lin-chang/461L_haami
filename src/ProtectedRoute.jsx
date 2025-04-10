@@ -1,10 +1,22 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "./AuthContext";
+import { useEffect, useState } from "react";
 
 const ProtectedRoute = ({ children }) => {
-  const { user } = useAuth();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  if (!user) {
+  // check if authToken exists to automatically login user
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    const userid = localStorage.getItem("userid");
+
+    if (token && userid) {
+      setIsLoggedIn(true);
+    }
+    setLoading(false);
+  }, []);
+
+  if (!isLoggedIn && !loading) {
     return <Navigate to="/login" replace />;
   }
 
