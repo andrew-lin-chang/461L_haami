@@ -1,11 +1,17 @@
 from flask import Blueprint, request, jsonify
-from schema import Project, Hardware, Checkout
+from schema import User, Project, Hardware, Checkout
 
 project_routes = Blueprint('projects', __name__)
 
 @project_routes.get("/")
 def get_projects():
-    projects = Project.objects()
+    userid = request.args.get("userid")
+
+    user = User.objects(userid=userid).first()
+    if not user:
+        return jsonify({"message": "User ID not found"}), 404
+    
+    projects = Project.objects(authorized_users=user)
     project_list = []
     for project in projects:
         project_list.append({
