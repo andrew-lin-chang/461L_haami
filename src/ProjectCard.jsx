@@ -113,8 +113,6 @@ function HardwareRow({ hardware }) {
 }
 
 export default function ProjectCard({ project }) {
-  console.log(project);
-
   return (
     <Card style={{ marginBottom: "20px" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
