@@ -39,13 +39,15 @@ def create_test_projects():
         project_id=123,
         project_name="Project 1",
         description="A set of hardware components",
-        hardware_list=[hwset1, hwset2]
+        hardware_list=[hwset1, hwset2],
+        authorized_users=[User.objects(userid="test").first()]
     )
     project2 = Project(
         project_id=456,
         project_name="Project 2",
         description="Another set of hardware components",
-        hardware_list=[hwset1, hwset2]
+        hardware_list=[hwset1, hwset2],
+        authorized_users=[User.objects(userid="test").first()]
     )
     project1.save()
     project2.save()
