@@ -90,8 +90,8 @@ function HardwareRow({ hardware }) {
       </TableCell>
       <TableCell>
         <Button
-          variant="contained"
-          color="secondary"
+          variant="outlined"
+          color="primary"
           onClick={handleCheckin}
           disabled={quantity > checkedOut}
         >
@@ -159,7 +159,7 @@ export default function ProjectCard({ project, onRemove }) {
       </Box>
       <Typography
         align="left"
-        sx={{ padding: "5px 10px", color: "gray" }}
+        sx={{ padding: "0px 10px", color: "black", marginBottom: "10px" }}
         variant="body2"
       >
         {project.description}
@@ -168,12 +168,12 @@ export default function ProjectCard({ project, onRemove }) {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Resource</TableCell>
-              <TableCell>Available</TableCell>
-              <TableCell>Checked Out</TableCell>
-              <TableCell>Quantity</TableCell>
-              <TableCell>Check in</TableCell>
-              <TableCell>Check out</TableCell>
+              <TableCell sx={{ color: "gray" }}>Resource</TableCell>
+              <TableCell sx={{ color: "gray" }}>Available</TableCell>
+              <TableCell sx={{ color: "gray" }}>Checked Out</TableCell>
+              <TableCell sx={{ color: "gray" }}>Quantity</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -11,6 +11,8 @@ import {
   DialogContentText,
   DialogTitle,
   TextField,
+  CssBaseline,
+  useScrollTrigger,
 } from "@mui/material";
 import ProjectCard from "./ProjectCard";
 import { useAuth } from "./AuthContext";
@@ -21,6 +23,10 @@ const apiUrl = import.meta.env.VITE_API_URL;
 function Header() {
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const trigger = useScrollTrigger({
+    disableHysteresis: true,
+    threshold: 0,
+  });
 
   const handleLogout = () => {
     logout();
@@ -33,21 +39,21 @@ function Header() {
       style={{
         backgroundColor: "white",
         color: "black",
-        boxShadow: "none",
         padding: "12px",
+        boxShadow: trigger ? "0 2px 4px rgba(0, 0, 0, 0.1)" : "none",
       }}
     >
-      <Toolbar>
-        <Typography
-          variant="h5"
-          component="div"
-          sx={{ flexGrow: 1 }}
-          style={{ fontWeight: "bold" }}
-        >
+      <Toolbar style={{ justifyContent: "space-between" }}>
+        <Typography variant="h5" component="div" style={{ fontWeight: "bold" }}>
           haami
         </Typography>
 
-        <Button variant="outlined" color="inherit" onClick={handleLogout}>
+        <Button
+          variant="text"
+          color="primary"
+          size="small"
+          onClick={handleLogout}
+        >
           Logout
         </Button>
       </Toolbar>
@@ -166,21 +172,25 @@ export default function Dashboard() {
     <div>
       <Header />
       <Container style={{ marginTop: "80px" }}>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom fontWeight={"bold"}>
           {userid}'s Projects
         </Typography>
         <Button
           variant="contained"
           color="primary"
-          style={{ marginBottom: "20px", marginRight: "10px" }}
+          style={{
+            marginTop: "14px",
+            marginBottom: "40px",
+            marginRight: "10px",
+          }}
           onClick={() => setOpenCreateDialog(true)}
         >
           Create New Project
         </Button>
         <Button
-          variant="contained"
-          color="secondary"
-          style={{ marginBottom: "20px" }}
+          variant="outlined"
+          color="primary"
+          style={{ marginTop: "14px", marginBottom: "40px" }}
           onClick={() => setOpenJoinDialog(true)}
         >
           Join Existing Project
