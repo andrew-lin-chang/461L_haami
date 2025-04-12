@@ -67,3 +67,25 @@ def join_project():
     project.save()
 
     return jsonify({"message": "User added to the project successfully"}), 200
+
+@project_routes.post("/leave")
+def leave_project():
+    data = request.json
+    project_id = data.get("project_id")
+    userid = data.get("userid")
+
+    user = User.objects(userid=userid).first()
+    if not user:
+        return jsonify({"message": "User ID not found"}), 404
+
+    project = Project.objects(project_id=project_id).first()
+    if not project:
+        return jsonify({"message": "Project ID not found"}), 404
+
+    if user not in project.authorized_users:
+        return jsonify({"message": "User not authorized for this project"}), 400
+
+    project.authorized_users.remove(user)
+    project.save()
+
+    return jsonify({"message": "User removed from the project successfully"}), 200

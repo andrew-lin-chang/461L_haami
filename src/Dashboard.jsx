@@ -156,6 +156,12 @@ export default function Dashboard() {
     }
   };
 
+  const removeProject = (project_id) => {
+    setProjects((prevProjects) =>
+      prevProjects.filter((project) => project.project_id !== project_id),
+    );
+  };
+
   return (
     <div>
       <Header />
@@ -182,7 +188,11 @@ export default function Dashboard() {
         <div>
           {projects &&
             projects.map((project) => (
-              <ProjectCard key={project.project_id} project={project} />
+              <ProjectCard
+                key={project.project_id}
+                project={project}
+                onRemove={removeProject}
+              />
             ))}
         </div>
       </Container>

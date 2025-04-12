@@ -112,7 +112,37 @@ function HardwareRow({ hardware }) {
   );
 }
 
-export default function ProjectCard({ project }) {
+export default function ProjectCard({ project, onRemove }) {
+  const apiUrl = import.meta.env.VITE_API_URL;
+  const { user } = useAuth();
+
+  const handleLeaveProject = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/projects/leave`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userid: user.userid, // User ID from AuthContext
+          project_id: project.project_id, // Project ID from the card
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        onRemove(project.project_id); // Remove the project from the UI
+      } else {
+        alert(data.message); // Notify the user of failure
+        console.error(data);
+      }
+    } catch (error) {
+      console.error("Error leaving project:", error);
+      alert("An error occurred while trying to leave the project.");
+    }
+  };
+
   return (
     <Card style={{ marginBottom: "20px" }}>
       <Box sx={{ display: "flex", justifyContent: "space-between" }}>
@@ -152,6 +182,13 @@ export default function ProjectCard({ project }) {
             ))}
           </TableBody>
         </Table>
+        <Box
+          sx={{ display: "flex", justifyContent: "flex-end", padding: "10px" }}
+        >
+          <Button color="error" onClick={handleLeaveProject}>
+            Leave Project
+          </Button>
+        </Box>
       </TableContainer>
     </Card>
   );
