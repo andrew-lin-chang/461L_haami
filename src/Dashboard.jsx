@@ -64,7 +64,7 @@ export default function Dashboard() {
     description: "",
   });
   const [projects, setProjects] = useState([]);
-  const { user } = useAuth();
+  const userid = localStorage.getItem("userid");
 
   useEffect(() => {
     fetchProjects();
@@ -72,7 +72,12 @@ export default function Dashboard() {
 
   const fetchProjects = async () => {
     try {
-      let response = await fetch(`${apiUrl}/projects`);
+      let response = await fetch(`${apiUrl}/projects/?userid=${userid}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (response.ok) {
         let data = await response.json();
         setProjects(data);
@@ -159,7 +164,7 @@ export default function Dashboard() {
       <Header />
       <Container style={{ marginTop: "80px" }}>
         <Typography variant="h4" gutterBottom>
-          {user?.userid}'s Projects
+          {userid}'s Projects
         </Typography>
         <Button
           variant="contained"
