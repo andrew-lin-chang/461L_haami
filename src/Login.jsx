@@ -106,11 +106,11 @@ export default function Login() {
   return (
     <Container maxWidth="xs" style={{ marginTop: 10 }}>
       <Header />
-      {loginError.isError && (
+      {/* {loginError.isError && (
         <Typography color="error" style={{ marginBottom: 10 }}>
           {loginError.message}
         </Typography>
-      )}
+      )} */}
       <Typography variant="h3" gutterBottom style={{ fontWeight: "bold" }}>
         {isSignUp ? "Create account" : "Welcome back!"}
       </Typography>
@@ -122,6 +122,7 @@ export default function Login() {
           value={formData.userid}
           onChange={handleChange}
           required
+          error={loginError.isError}
           sx={{
             marginBottom: "12px",
           }}
@@ -134,7 +135,8 @@ export default function Login() {
           value={formData.password}
           onChange={handleChange}
           required
-          error={passwordError}
+          error={passwordError | loginError.isError}
+          helperText={loginError.isError ? loginError.message : ""}
           sx={{
             marginBottom: "12px",
           }}
