@@ -16,6 +16,8 @@ import { useAuth } from "./AuthContext";
 const apiUrl = import.meta.env.VITE_API_URL;
 
 function Header() {
+  const navigate = useNavigate();
+
   return (
     <AppBar
       position="fixed"
@@ -30,8 +32,15 @@ function Header() {
         <Typography
           variant="h5"
           component="div"
-          sx={{ flexGrow: 1 }}
-          style={{ fontWeight: "bold" }}
+          sx={{
+            flexGrow: 1,
+            cursor: "pointer",
+            fontWeight: "bold",
+            "&:hover": {
+              color: "#E48312",
+            },
+          }}
+          onClick={() => navigate("/")}
         >
           haami
         </Typography>
