@@ -21,11 +21,13 @@ def create_test_users():
 def create_test_hwsets():
     hwset1 = Hardware(
         item="Hardware Set 1",
+        capacity=10,
         available=10,
         checked_out=0,
     )
     hwset2 = Hardware(
         item="Hardware Set 2",
+        capacity=10,
         available=10,
         checked_out=0,
     )

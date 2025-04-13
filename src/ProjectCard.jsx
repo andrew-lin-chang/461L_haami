@@ -78,6 +78,7 @@ function HardwareRow({ hardware, onRefresh }) {
   return (
     <TableRow>
       <TableCell>{hardware.item}</TableCell>
+      <TableCell>{hardware.capacity}</TableCell>
       <TableCell>{available}</TableCell>
       <TableCell>{checkedOut}</TableCell>
       <TableCell>
@@ -171,9 +172,10 @@ export default function ProjectCard({ project, onRefresh }) {
           <TableHead>
             <TableRow>
               <TableCell sx={{ color: "gray" }}>Resource</TableCell>
+              <TableCell sx={{ color: "gray" }}>Capacity</TableCell>
               <TableCell sx={{ color: "gray" }}>Available</TableCell>
               <TableCell sx={{ color: "gray" }}>Checked Out</TableCell>
-              <TableCell sx={{ color: "gray" }}>Quantity</TableCell>
+              <TableCell sx={{ color: "gray" }}>Request</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
             </TableRow>
