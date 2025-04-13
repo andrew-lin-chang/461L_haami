@@ -141,7 +141,7 @@ export default function Dashboard() {
       project_id: formData.project_id,
       project_name: formData.project_name,
       description: formData.description,
-      authorized_users: [],
+      userid: userid,
       hardware: [],
     };
 
