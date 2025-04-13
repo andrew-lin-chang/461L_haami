@@ -11,6 +11,7 @@ from config import Config
 from routes.auth_routes import auth_routes
 from routes.project_routes import project_routes
 from routes.hardware_routes import hardware_routes
+from routes.checkout_routes import checkout_routes
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -23,6 +24,7 @@ connect("461L", host=Config.MONGO_URI)
 app.register_blueprint(auth_routes, url_prefix="/auth")
 app.register_blueprint(project_routes, url_prefix="/projects")
 app.register_blueprint(hardware_routes, url_prefix="/hardware")
+app.register_blueprint(checkout_routes, url_prefix="/checkouts")
 
 @app.route("/")
 def home():

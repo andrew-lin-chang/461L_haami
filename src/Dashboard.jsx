@@ -15,6 +15,7 @@ import {
   useScrollTrigger,
 } from "@mui/material";
 import ProjectCard from "./ProjectCard";
+import CheckoutCard from "./CheckoutCard";
 import { useAuth } from "./AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -70,6 +71,7 @@ export default function Dashboard() {
     description: "",
   });
   const [projects, setProjects] = useState([]);
+  const [refresh, setRefresh] = useState(false);
   const userid = localStorage.getItem("userid");
 
   useEffect(() => {
@@ -93,6 +95,10 @@ export default function Dashboard() {
     } catch (err) {
       console.error("Error fetching projects:", err);
     }
+  };
+
+  const triggerRefresh = () => {
+    setRefresh((prev) => !prev);
   };
 
   const handleChange = (e) => {
@@ -202,6 +208,7 @@ export default function Dashboard() {
                 key={project.project_id}
                 project={project}
                 onRemove={removeProject}
+                onRefresh={triggerRefresh}
               />
             ))}
         </div>
@@ -284,6 +291,7 @@ export default function Dashboard() {
           </Button>
         </DialogActions>
       </Dialog>
+      <CheckoutCard refresh={refresh} />
     </div>
   );
 }
