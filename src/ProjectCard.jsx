@@ -115,7 +115,7 @@ function HardwareRow({ hardware, onRefresh }) {
   );
 }
 
-export default function ProjectCard({ project, onRefresh }) {
+export default function ProjectCard({ project, onRefresh, onRemove }) {
   const apiUrl = import.meta.env.VITE_API_URL;
   const { user } = useAuth();
 
