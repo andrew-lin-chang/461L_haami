@@ -55,6 +55,8 @@ function Home() {
       }}
     >
       <Header />
+      {/* This Toolbar acts as a spacer for the fixed header */}
+      <Toolbar />
       <Typography
         variant="h4"
         gutterBottom
