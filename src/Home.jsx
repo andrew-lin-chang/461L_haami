@@ -92,22 +92,22 @@ function Home() {
         />
         <Box
           component="img"
-          src="/public/spread.jpeg"
+          src="/spread.jpeg"
           sx={{ width: "auto", height: "200px", borderRadius: "16px" }}
         />
         <Box
           component="img"
-          src="/public/pcb.jpeg"
+          src="/pcb.jpeg"
           sx={{ width: "auto", height: "250px", borderRadius: "16px" }}
         />
         <Box
           component="img"
-          src="/public/lab.jpg"
+          src="/lab.jpg"
           sx={{ width: "auto", height: "200px", borderRadius: "16px" }}
         />
         <Box
           component="img"
-          src="/public/pcbs.jpeg"
+          src="/pcbs.jpeg"
           sx={{ width: "auto", height: "250px", borderRadius: "16px" }}
         />
       </Box>
