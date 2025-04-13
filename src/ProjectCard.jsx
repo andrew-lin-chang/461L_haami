@@ -15,7 +15,7 @@ import {
   Button,
 } from "@mui/material";
 
-function HardwareRow({ hardware }) {
+function HardwareRow({ hardware, onRefresh }) {
   const [available, setAvailable] = useState(parseInt(hardware.available));
   const [checkedOut, setCheckedOut] = useState(parseInt(hardware.checked_out));
   const [quantity, setQuantity] = useState(0);
@@ -41,6 +41,7 @@ function HardwareRow({ hardware }) {
     if (response.ok) {
       setAvailable(available + parseInt(quantity));
       setCheckedOut(checkedOut - parseInt(quantity));
+      onRefresh();
       alert(data.message);
     } else {
       alert(data.message);
@@ -66,6 +67,7 @@ function HardwareRow({ hardware }) {
     if (response.ok) {
       setAvailable(available - parseInt(quantity));
       setCheckedOut(checkedOut + parseInt(quantity));
+      onRefresh();
       alert(data.message);
     } else {
       alert(data.message);
@@ -112,7 +114,7 @@ function HardwareRow({ hardware }) {
   );
 }
 
-export default function ProjectCard({ project, onRemove }) {
+export default function ProjectCard({ project, onRefresh }) {
   const apiUrl = import.meta.env.VITE_API_URL;
   const { user } = useAuth();
 
@@ -178,7 +180,11 @@ export default function ProjectCard({ project, onRemove }) {
           </TableHead>
           <TableBody>
             {project.hardware.map((hardware, hardwareIndex) => (
-              <HardwareRow key={hardwareIndex} hardware={hardware} />
+              <HardwareRow
+                key={hardwareIndex}
+                hardware={hardware}
+                onRefresh={onRefresh}
+              />
             ))}
           </TableBody>
         </Table>
