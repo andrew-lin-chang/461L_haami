@@ -87,7 +87,7 @@ function Home() {
       >
         <Box
           component="img"
-          src="/public/breadboard.jpeg"
+          src="/breadboard.jpeg"
           sx={{ width: "auto", height: "250px", borderRadius: "16px" }}
         />
         <Box
