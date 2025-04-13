@@ -13,6 +13,7 @@ class Project(Document):
 
 class Hardware(Document):
     item = StringField(required=True)
+    capacity = IntField(required=True)
     available = IntField(required=True)
     checked_out = IntField(required=True)
     checkouts = ListField(ReferenceField('Checkout'), default=list)

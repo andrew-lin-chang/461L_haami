@@ -19,7 +19,7 @@ def get_projects():
             "project_name": project.project_name,
             "description": project.description,
             "authorized_users": [user.userid for user in project.authorized_users],
-            "hardware": [{"item": hw.item, "available": hw.available, "checked_out": hw.checked_out} for hw in project.hardware_list]
+            "hardware": [{"item": hw.item, "capacity": hw.capacity, "available": hw.available, "checked_out": hw.checked_out} for hw in project.hardware_list]
         })
     return jsonify(project_list), 200
 
