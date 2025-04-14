@@ -1,3 +1,6 @@
+# ECE 461L Software Engineering Lab
+Hardware as a Service (HaaS) checkout system. HAAMI stands for group member names.
+
 ## Getting started
 
 ### Install dependencies
